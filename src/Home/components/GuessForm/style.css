@@ -1,0 +1,85 @@
+body {
+    background: linear-gradient(to right, #ffffff, #e0e0e0);
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    padding: 20px;
+    text-align: center;
+    position: relative;
+  }
+
+  .top-right {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+  
+  .pista {
+    color: #A02334;
+    font-weight: bold;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 16px;
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+  }
+  
+  .btn-primary {
+    background-color: #2A629A;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #003285;
+  }
+  
+  .btn-adivinanza {
+    display: block;
+    margin: 10px auto; 
+  }
+  
+  .btn-reiniciar {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #FF4C4C;
+    color: white;
+  }
+  
+  .btn-reiniciar:hover {
+    background-color: #FF1C1C; 
+  }
+  
+  .mensaje {
+    color: #387F39;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  .mensajePerdedor {
+    color: #A02334;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  
+  input[type="number"] {
+    display: block;
+    margin: 0 auto 10px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc; 
+  }
+  
+  
+  

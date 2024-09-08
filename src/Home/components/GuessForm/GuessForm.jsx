@@ -1,0 +1,120 @@
+import React, { useState } from 'react';
+import './style.css';
+
+const GuessForm = () => {
+  const [numeroIngresado, setNumeroIngresado] = useState('');
+  const [numeroSecreto, setNumeroSecreto] = useState(generarNumeroRandom());
+  const [pista, setPista] = useState('');
+  const [puntaje, setPuntaje] = useState(10);
+  const [puntajeAlto, setPuntajeAlto] = useState(0);
+  const [mensaje, setMensaje] = useState('');
+  const [juegoTerminado, setJuegoTerminado] = useState(false);
+
+  function generarNumeroRandom() {
+    return Math.floor(Math.random() * 20) + 1;
+  }
+
+  const handleInputChange = (e) => {
+    setNumeroIngresado(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const numeroIngresadoValue = Number(numeroIngresado);
+
+    if (numeroIngresadoValue < 1 || numeroIngresadoValue > 20) {
+      setPista('El número debe estar entre 1 y 20.');
+      return;
+    }
+
+    if (numeroIngresadoValue === numeroSecreto) {
+      if (!juegoTerminado) {
+        document.body.style.background = 'linear-gradient(to right, #a8e063, #56ab2f)'; 
+        setMensaje('¡Felicidades! Has adivinado el número correctamente.');
+        setPuntajeAlto(prevPuntajeAlto => Math.max(prevPuntajeAlto, puntaje));
+        setPuntaje(10);
+        setTimeout(() => {
+          document.body.style.background = ''; 
+          setMensaje(''); 
+        }, 2000);
+        reiniciarJuego(); 
+      }
+    } else {
+      const nuevoPuntaje = puntaje - 1;
+      if (nuevoPuntaje <= 0) {
+        if (!juegoTerminado) {
+          document.body.style.background = 'linear-gradient(to right, #ff6f6f, #ff3f3f)';
+          setMensaje('¡Juego terminado! Tu puntaje más alto fue: ' + puntajeAlto);
+          setJuegoTerminado(true);
+          setTimeout(() => {
+            document.body.style.background = ''; 
+            setMensaje('');
+          }, 2000);
+        }
+      } else {
+        setPuntaje(nuevoPuntaje);
+        setPista(numeroIngresadoValue < numeroSecreto ? 'El número es mayor.' : 'El número es menor.');
+        setMensaje('');
+      }
+    }
+    setNumeroIngresado('');
+  };
+
+  const reiniciarJuego = () => {
+    setNumeroIngresado('');
+    setPista('');
+    setNumeroSecreto(generarNumeroRandom());
+  };
+
+  const handleReiniciarJuego = () => {
+    setPuntaje(10);
+    setJuegoTerminado(false);
+    reiniciarJuego();
+    setMensaje('');
+  };
+
+  return (
+
+      <div>
+        <div className='top-right'>
+          <button onClick={handleReiniciarJuego} className='btn btn-primary btn-reiniciar'>Reiniciar</button>
+        </div>
+    
+        <div className='container'>
+          {juegoTerminado ? (
+            <div>
+              <h1 className='text-center'>Juego Terminado</h1>
+              <p className='text-center mensajePerdedor'>¡Perdiste! Tu puntaje más alto fue: {puntajeAlto}</p>
+            </div>
+          ) : (
+            <div>
+              <h1 className='text-center'>Bienvenido</h1>
+              <h2 className='text-center'>¿Listo para adivinar el número del 1-20?</h2>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="number"
+                  value={numeroIngresado}
+                  onChange={handleInputChange}
+                  min="1"
+                  max="20"
+                  placeholder="Adivina el número"
+                />
+                <button type="submit" className='btn btn-primary btn-adivinanza'>Adivinar</button>
+              </form>
+              {pista && (
+                <p className='pista'>{pista}</p>
+              )}
+              {mensaje && (
+                <p className='mensaje'>{mensaje}</p>
+              )}
+              <div className='text-center'>
+                <p>Puntaje: {puntaje}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+};
+
+export default GuessForm;
