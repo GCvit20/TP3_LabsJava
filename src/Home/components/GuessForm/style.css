@@ -80,6 +80,19 @@ body {
     border-radius: 5px;
     border: 1px solid #ccc; 
   }
+
+  .progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    height: 20px;
+    margin: 20px 0;
+  }
   
+  .progress-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease-in-out;
+  }
   
   

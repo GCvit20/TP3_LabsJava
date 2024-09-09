@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 
 const GuessForm = () => {
@@ -9,6 +9,8 @@ const GuessForm = () => {
   const [puntajeAlto, setPuntajeAlto] = useState(0);
   const [mensaje, setMensaje] = useState('');
   const [juegoTerminado, setJuegoTerminado] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [tiempo, setTiempo] = useState(20);
 
   function generarNumeroRandom() {
     return Math.floor(Math.random() * 20) + 1;
@@ -16,6 +18,14 @@ const GuessForm = () => {
 
   const handleInputChange = (e) => {
     setNumeroIngresado(e.target.value);
+  };
+
+  const getBarColor = (value, maxValue) => {
+    const percentage = (value / maxValue) * 100;
+    if (percentage > 75) return '#4caf50'; 
+    if (percentage > 50) return '#f4c542'; 
+    if (percentage > 25) return '#ff9800'; 
+    return '#ff6f6f';
   };
 
   const handleSubmit = (e) => {
@@ -26,6 +36,9 @@ const GuessForm = () => {
       setPista('El número debe estar entre 1 y 20.');
       return;
     }
+
+    const distance = Math.abs(numeroSecreto - numeroIngresadoValue);
+    const maxDistance = 20;
 
     if (numeroIngresadoValue === numeroSecreto) {
       if (!juegoTerminado) {
@@ -57,6 +70,10 @@ const GuessForm = () => {
         setMensaje('');
       }
     }
+
+    const progressPercentage = ((maxDistance - distance) / maxDistance) * 100;
+    setProgress(progressPercentage);
+
     setNumeroIngresado('');
   };
 
@@ -64,6 +81,8 @@ const GuessForm = () => {
     setNumeroIngresado('');
     setPista('');
     setNumeroSecreto(generarNumeroRandom());
+    setProgress(0);
+    setTiempo(20);
   };
 
   const handleReiniciarJuego = () => {
@@ -73,48 +92,75 @@ const GuessForm = () => {
     setMensaje('');
   };
 
-  return (
+  useEffect(() => {
+    let interval = null;
+    if (!juegoTerminado && tiempo > 0) {
+      interval = setInterval(() => setTiempo(tiempo => tiempo - 1), 1000);
+    } else if (tiempo === 0) {
+      if (!juegoTerminado) {
+        setMensaje('¡Tiempo terminado! El número secreto era: ' + numeroSecreto);
+        document.body.style.background = 'linear-gradient(to right, #ff6f6f, #ff3f3f)';
+        setJuegoTerminado(true);
+        setTimeout(() => {
+          document.body.style.background = ''; 
+          setMensaje('');
+        }, 2000);
+      }
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  }, [juegoTerminado, tiempo]);
 
-      <div>
-        <div className='top-right'>
-          <button onClick={handleReiniciarJuego} className='btn btn-primary btn-reiniciar'>Reiniciar</button>
-        </div>
-    
-        <div className='container'>
-          {juegoTerminado ? (
-            <div>
-              <h1 className='text-center'>Juego Terminado</h1>
-              <p className='text-center mensajePerdedor'>¡Perdiste! Tu puntaje más alto fue: {puntajeAlto}</p>
-            </div>
-          ) : (
-            <div>
-              <h1 className='text-center'>Bienvenido</h1>
-              <h2 className='text-center'>¿Listo para adivinar el número del 1-20?</h2>
-              <form onSubmit={handleSubmit}>
-                <input
-                  type="number"
-                  value={numeroIngresado}
-                  onChange={handleInputChange}
-                  min="1"
-                  max="20"
-                  placeholder="Adivina el número"
-                />
-                <button type="submit" className='btn btn-primary btn-adivinanza'>Adivinar</button>
-              </form>
-              {pista && (
-                <p className='pista'>{pista}</p>
-              )}
-              {mensaje && (
-                <p className='mensaje'>{mensaje}</p>
-              )}
-              <div className='text-center'>
-                <p>Puntaje: {puntaje}</p>
-              </div>
-            </div>
-          )}
-        </div>
+  return (
+    <div>
+      <div className='top-right'>
+        <button onClick={handleReiniciarJuego} className='btn btn-primary btn-reiniciar'>Reiniciar</button>
       </div>
-    );
+
+      <div className='container'>
+        {juegoTerminado ? (
+          <div>
+            <h1 className='text-center'>Juego Terminado</h1>
+            <p className='text-center mensajePerdedor'>¡Perdiste! Tu puntaje más alto fue: {puntajeAlto}</p>
+          </div>
+        ) : (
+          <div>
+            <h1 className='text-center'>Bienvenido</h1>
+            <h2 className='text-center'>¿Listo para adivinar el número del 1-20?</h2>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="number"
+                value={numeroIngresado}
+                onChange={handleInputChange}
+                min="1"
+                max="20"
+                placeholder="Adivina el número"
+              />
+              <button type="submit" className='btn btn-primary btn-adivinanza'>Adivinar</button>
+              <div className="progress-container">
+                <div
+                  className="progress-bar"
+                  style={{
+                    width: `${(juegoTerminado || tiempo === 0 ? progress : (tiempo / 20) * 100)}%`,
+                    backgroundColor: getBarColor(tiempo, 20)
+                  }}
+                ></div>
+              </div>
+            </form>
+            {pista && (
+              <p className='pista'>{pista}</p>
+            )}
+            {mensaje && (
+              <p className='mensaje'>{mensaje}</p>
+            )}
+            <div className='text-center'>
+              <p>Puntaje: {puntaje}</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default GuessForm;
