@@ -89,8 +89,9 @@ const GuessForm = () => {
   };
 
   const handleReiniciarJuego = () => {
-    setPuntajeTotal(0);
     setPuntaje(10);
+    setPuntajeTotal(0);
+    setPuntajeAlto(0);
     setJuegoTerminado(false);
     reiniciarJuego();
     setMensaje('');
