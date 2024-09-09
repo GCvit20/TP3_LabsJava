@@ -11,6 +11,8 @@ const GuessForm = () => {
   const [juegoTerminado, setJuegoTerminado] = useState(false);
   const [progress, setProgress] = useState(0);
   const [tiempo, setTiempo] = useState(20);
+  const [puntajeTotal, setPuntajeTotal] = useState(0);
+
 
   function generarNumeroRandom() {
     return Math.floor(Math.random() * 20) + 1;
@@ -45,6 +47,7 @@ const GuessForm = () => {
         document.body.style.background = 'linear-gradient(to right, #a8e063, #56ab2f)'; 
         setMensaje('¡Felicidades! Has adivinado el número correctamente.');
         setPuntajeAlto(prevPuntajeAlto => Math.max(prevPuntajeAlto, puntaje));
+        setPuntajeTotal(prevPuntajeTotal => prevPuntajeTotal + puntaje);
         setPuntaje(10);
         setTimeout(() => {
           document.body.style.background = ''; 
@@ -86,6 +89,7 @@ const GuessForm = () => {
   };
 
   const handleReiniciarJuego = () => {
+    setPuntajeTotal(0);
     setPuntaje(10);
     setJuegoTerminado(false);
     reiniciarJuego();
@@ -116,7 +120,7 @@ const GuessForm = () => {
       <div className='top-right'>
         <button onClick={handleReiniciarJuego} className='btn btn-primary btn-reiniciar'>Reiniciar</button>
       </div>
-
+  
       <div className='container'>
         {juegoTerminado ? (
           <div>
@@ -155,6 +159,7 @@ const GuessForm = () => {
             )}
             <div className='text-center'>
               <p>Puntaje: {puntaje}</p>
+              <p>Puntaje Total: {puntajeTotal}</p>
             </div>
           </div>
         )}
