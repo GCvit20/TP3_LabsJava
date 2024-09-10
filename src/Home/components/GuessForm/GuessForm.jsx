@@ -134,6 +134,7 @@ const GuessForm = () => {
             <h2 className='text-center'>¿Listo para adivinar el número del 1-20?</h2>
             <form onSubmit={handleSubmit}>
               <input
+                className='cajaNumerica'
                 type="number"
                 value={numeroIngresado}
                 onChange={handleInputChange}
